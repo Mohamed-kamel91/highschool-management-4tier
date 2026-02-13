@@ -137,3 +137,7 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+.agents
+migration_lock.toml
+generated/prisma
