@@ -4,7 +4,7 @@ import { StudentDatabase } from '../persistence/student-database';
 import { StudentService } from '../services/student-service';
 
 import { parseForResponse } from '../utils';
-import { GetStudentDTO } from '../dto/student-dto';
+import { CreateStudentDTO, GetStudentDTO } from '../dto/student-dto';
 import { prisma } from '../database';
 
 class StudentController {
@@ -28,6 +28,26 @@ class StudentController {
       res.status(200).json({
         data: parseForResponse(data),
         error: null,
+        success: true,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public createStudent = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    try {
+      const dto = CreateStudentDTO.fromRequest(req.body);
+
+      const data = await this.studentService.createStudent(dto);
+
+      res.status(201).json({
+        error: undefined,
+        data: parseForResponse(data),
         success: true,
       });
     } catch (err) {

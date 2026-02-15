@@ -17,4 +17,14 @@ export class StudentDatabase {
 
     return data;
   }
+
+  public async createStudent(name: string) {
+    const data = await this.prisma.student.create({
+      data: {
+        name,
+      },
+    });
+
+    return data;
+  }
 }

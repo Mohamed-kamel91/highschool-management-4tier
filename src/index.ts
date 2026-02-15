@@ -26,14 +26,14 @@ app.use(
   (err: any, req: Request, res: Response, next: NextFunction) => {
     if (err instanceof AppError) {
       return res.status(err.statusCode).json({
-        data: null,
+        data: undefined,
         error: err.message,
         success: false,
       });
     }
 
     res.status(500).json({
-      data: null,
+      data: undefined,
       error: 'Internal server error',
       success: false,
     });
@@ -41,39 +41,6 @@ app.use(
 );
 
 // API Endpoints
-
-// POST student created
-app.post('/students', async (req: Request, res: Response) => {
-  try {
-    if (isMissingKeys(req.body, ['name'])) {
-      return res.status(400).json({
-        error: Errors.ValidationError,
-        data: undefined,
-        success: false,
-      });
-    }
-
-    const { name } = req.body;
-
-    const student = await prisma.student.create({
-      data: {
-        name,
-      },
-    });
-
-    res.status(201).json({
-      error: undefined,
-      data: parseForResponse(student),
-      success: true,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: Errors.ServerError,
-      data: undefined,
-      success: false,
-    });
-  }
-});
 
 // POST class created
 app.post('/classes', async (req: Request, res: Response) => {

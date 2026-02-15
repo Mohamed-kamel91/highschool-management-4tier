@@ -1,6 +1,6 @@
-import { AppError } from '../errors/app-errors';
+import { BadRequestError } from '../errors/app-errors';
 import { InvalidStudentIdError } from '../errors/student-errors';
-import { isUUID } from '../utils';
+import { isMissingKeys, isUUID } from '../utils';
 
 export class GetStudentDTO {
   private constructor(public studentId: string) {}
@@ -11,5 +11,25 @@ export class GetStudentDTO {
     }
 
     return new GetStudentDTO(id);
+  }
+}
+
+export class CreateStudentDTO {
+  private constructor(public studentName: string) {}
+
+  public static fromRequest(body: unknown) {
+    const requiredKeys = ['name'];
+    const invalidRequest =
+      !body ||
+      typeof body !== 'object' ||
+      isMissingKeys(body, requiredKeys);
+
+    if (invalidRequest) {
+      throw new BadRequestError('Invalid request body');
+    }
+
+    const { name } = body as { name: string };
+
+    return new CreateStudentDTO(name);
   }
 }
