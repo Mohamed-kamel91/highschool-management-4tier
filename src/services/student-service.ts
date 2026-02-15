@@ -1,6 +1,6 @@
 import { StudentDatabase } from '../persistence/student-database';
 
-import { CreateStudentDTO, GetStudentDTO } from '../dto/student-dto';
+import { CreateStudentDTO, GetStudentDTO } from '../dtos/student-dto';
 import { StudentNotFoundError } from '../errors/student-errors';
 import { InternalServerError } from '../errors/app-errors';
 

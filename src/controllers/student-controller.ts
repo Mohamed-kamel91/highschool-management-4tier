@@ -4,7 +4,7 @@ import { StudentDatabase } from '../persistence/student-database';
 import { StudentService } from '../services/student-service';
 
 import { parseForResponse } from '../utils';
-import { CreateStudentDTO, GetStudentDTO } from '../dto/student-dto';
+import { CreateStudentDTO, GetStudentDTO } from '../dtos/student-dto';
 import { prisma } from '../database';
 
 class StudentController {
