@@ -1,12 +1,10 @@
 import { StudentDatabase } from '../persistence/student-database';
+import { GetStudentDTO, CreateStudentDTO } from '../dtos/student-dto';
 
-import { CreateStudentDTO, GetStudentDTO } from '../dtos/student-dto';
-import { StudentNotFoundError } from '../errors/student-errors';
-import { InternalServerError } from '../errors/app-errors';
+import { StudentNotFoundError } from '../shared/errors/student-errors';
+import { InternalServerError } from '../shared/errors/app-errors';
 
-import { Result } from '../types';
-
-export class StudentService {
+class StudentService {
   private studentDatabase: StudentDatabase;
 
   constructor(studentDatabase: StudentDatabase) {
@@ -17,8 +15,7 @@ export class StudentService {
     const { studentId } = dto;
 
     try {
-      const student =
-        await this.studentDatabase.getStudentById(studentId);
+      const student = await this.studentDatabase.getById(studentId);
 
       if (!student) {
         throw new StudentNotFoundError();
@@ -33,8 +30,7 @@ export class StudentService {
   public async createStudent(dto: CreateStudentDTO) {
     const { studentName } = dto;
     try {
-      const student =
-        await this.studentDatabase.createStudent(studentName);
+      const student = await this.studentDatabase.save(studentName);
 
       return student;
     } catch (err) {
@@ -42,3 +38,5 @@ export class StudentService {
     }
   }
 }
+
+export default StudentService;

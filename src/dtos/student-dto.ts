@@ -1,6 +1,6 @@
-import { BadRequestError } from '../errors/app-errors';
-import { InvalidStudentIdError } from '../errors/student-errors';
-import { isMissingKeys, isUUID } from '../utils';
+import { BadRequestError } from '../shared/errors/app-errors';
+import { InvalidStudentIdError } from '../shared/errors/student-errors';
+import { isMissingKeys, isUUID } from '../shared/utils';
 
 export class GetStudentDTO {
   private constructor(public studentId: string) {}

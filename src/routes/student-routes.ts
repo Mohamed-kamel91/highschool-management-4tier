@@ -1,9 +1,15 @@
-import express from 'express';
-import { studentController } from '../controllers/student-controller';
+import { BaseRouter } from '../base-router';
+import { StudentController } from '../controllers';
 
-const router = express.Router();
+export class StudentRouter extends BaseRouter {
+  public readonly basePath: string = '/students';
 
-router.get('/students/:id', studentController.getStudent);
-router.post('/students', studentController.createStudent);
+  constructor(private controller: StudentController) {
+    super();
+  }
 
-export { router as studentRouter };
+  protected setupRoutes(): void {
+    this.router.post('/', this.controller.createStudent);
+    this.router.get('/:id', this.controller.getStudent);
+  }
+}

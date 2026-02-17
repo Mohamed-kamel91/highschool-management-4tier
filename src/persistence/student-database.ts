@@ -1,9 +1,14 @@
 import { PrismaClient } from '../../generated/prisma/client';
 
-export class StudentDatabase {
+interface StudentPersistence {
+  save(name: string): any;
+  getById(name: string): any;
+}
+
+export class StudentDatabase implements StudentPersistence {
   constructor(private prisma: PrismaClient) {}
 
-  public async getStudentById(id: string) {
+  public async getById(id: string) {
     const data = await this.prisma.student.findUnique({
       where: {
         id,
@@ -18,7 +23,7 @@ export class StudentDatabase {
     return data;
   }
 
-  public async createStudent(name: string) {
+  public async save(name: string) {
     const data = await this.prisma.student.create({
       data: {
         name,
