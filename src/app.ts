@@ -2,22 +2,24 @@ import { Server as HttpServer } from 'http';
 import express, { Express } from 'express';
 import cors from 'cors';
 
-import { errorMiddlewareHandler } from './shared/errors/error-middleware';
+import { ErrorHandler } from './shared/errors/errorHandler';
+import { BaseRouter } from './base-router';
 
-import { StudentRouter } from './routes/student-routes';
-
-class Server {
+class Application {
   private readonly _app: Express;
 
   get app(): Express {
     return this._app;
   }
 
-  constructor(private studentRouter: StudentRouter) {
+  constructor(
+    private routers: BaseRouter[],
+    private errorHandler: ErrorHandler,
+  ) {
     this._app = express();
     this.addMiddlewares();
     this.registerRoutes();
-    this.errorMiddlware();
+    this.setUpErrorHandler();
   }
 
   private addMiddlewares() {
@@ -26,16 +28,14 @@ class Server {
   }
 
   private registerRoutes() {
-    const routers = [this.studentRouter];
-
-    routers.forEach((router) => {
+    this.routers.forEach((router) => {
       router.register();
       this._app.use(router.basePath, router.getRouter());
     });
   }
 
-  private errorMiddlware() {
-    this._app.use(errorMiddlewareHandler);
+  private setUpErrorHandler() {
+    this._app.use(this.errorHandler);
   }
 
   public start(port: number) {
@@ -67,4 +67,4 @@ class Server {
   }
 }
 
-export default Server;
+export default Application;

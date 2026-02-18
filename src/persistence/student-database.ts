@@ -5,7 +5,7 @@ interface StudentPersistence {
   getById(name: string): any;
 }
 
-export class StudentDatabase implements StudentPersistence {
+class StudentDatabase implements StudentPersistence {
   constructor(private prisma: PrismaClient) {}
 
   public async getById(id: string) {
@@ -33,3 +33,5 @@ export class StudentDatabase implements StudentPersistence {
     return data;
   }
 }
+
+export default StudentDatabase;

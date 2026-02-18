@@ -25,7 +25,7 @@ class StudentController {
 
       res.status(200).json({
         data: parseForResponse(data),
-        error: null,
+        error: undefined,
         success: true,
       });
     } catch (err) {

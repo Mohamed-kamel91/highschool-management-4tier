@@ -1,8 +1,6 @@
-import { StudentDatabase } from '../persistence/student-database';
+import { StudentDatabase } from '../persistence';
 import { GetStudentDTO, CreateStudentDTO } from '../dtos/student-dto';
-
-import { StudentNotFoundError } from '../shared/errors/student-errors';
-import { InternalServerError } from '../shared/errors/app-errors';
+import { StudentNotFoundException } from '../exceptions/student-exceptions';
 
 class StudentService {
   private studentDatabase: StudentDatabase;
@@ -14,28 +12,21 @@ class StudentService {
   public async getStudent(dto: GetStudentDTO) {
     const { studentId } = dto;
 
-    try {
-      const student = await this.studentDatabase.getById(studentId);
+    const student = await this.studentDatabase.getById(studentId);
 
-      if (!student) {
-        throw new StudentNotFoundError();
-      }
-
-      return student;
-    } catch (err) {
-      throw new InternalServerError();
+    if (!student) {
+      throw new StudentNotFoundException();
     }
+
+    return student;
   }
 
   public async createStudent(dto: CreateStudentDTO) {
     const { studentName } = dto;
-    try {
-      const student = await this.studentDatabase.save(studentName);
 
-      return student;
-    } catch (err) {
-      throw new InternalServerError();
-    }
+    const student = await this.studentDatabase.save(studentName);
+
+    return student;
   }
 }
 
