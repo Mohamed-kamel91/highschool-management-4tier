@@ -52,6 +52,24 @@ class StudentController {
       next(err);
     }
   };
+
+  public getAllStudents = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    try {
+      const data = await this.studentService.getAllStudents();
+
+      res.status(201).json({
+        error: undefined,
+        data: parseForResponse(data),
+        success: true,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
 }
 
 export default StudentController;

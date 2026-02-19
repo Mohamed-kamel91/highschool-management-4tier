@@ -28,6 +28,12 @@ class StudentService {
 
     return student;
   }
+
+  public async getAllStudents() {
+    const students = await this.studentDatabase.getAll();
+
+    return students;
+  }
 }
 
 export default StudentService;

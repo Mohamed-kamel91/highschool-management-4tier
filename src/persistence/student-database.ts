@@ -3,6 +3,7 @@ import { PrismaClient } from '../../generated/prisma/client';
 interface StudentPersistence {
   save(name: string): any;
   getById(name: string): any;
+  getAll(): any;
 }
 
 class StudentDatabase implements StudentPersistence {
@@ -27,6 +28,21 @@ class StudentDatabase implements StudentPersistence {
     const data = await this.prisma.student.create({
       data: {
         name,
+      },
+    });
+
+    return data;
+  }
+
+  public async getAll() {
+    const data = await this.prisma.student.findMany({
+      include: {
+        classes: true,
+        assignments: true,
+        reportCards: true,
+      },
+      orderBy: {
+        name: 'asc',
       },
     });
 

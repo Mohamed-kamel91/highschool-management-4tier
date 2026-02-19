@@ -10,6 +10,7 @@ export class StudentRouter extends BaseRouter {
 
   protected setupRoutes(): void {
     this.router.post('/', this.controller.createStudent);
+    this.router.get('/', this.controller.getAllStudents);
     this.router.get('/:id', this.controller.getStudent);
   }
 }
