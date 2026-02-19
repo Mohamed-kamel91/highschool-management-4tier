@@ -12,5 +12,7 @@ export class StudentRouter extends BaseRouter {
     this.router.post('/', this.controller.createStudent);
     this.router.get('/', this.controller.getAllStudents);
     this.router.get('/:id', this.controller.getStudent);
+    this.router.get('/:id/assignments', this.controller.getAssignments);
+    this.router.get('/:id/grades', this.controller.getGrades);
   }
 }

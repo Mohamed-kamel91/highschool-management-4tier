@@ -2,12 +2,24 @@ import { PrismaClient } from '../../generated/prisma/client';
 
 interface StudentPersistence {
   save(name: string): any;
-  getById(name: string): any;
+  getById(id: string): any;
   getAll(): any;
+  getAssignments(id: string): any;
+  getGrades(id: string): any;
 }
 
 class StudentDatabase implements StudentPersistence {
   constructor(private prisma: PrismaClient) {}
+
+  public async save(name: string) {
+    const data = await this.prisma.student.create({
+      data: {
+        name,
+      },
+    });
+
+    return data;
+  }
 
   public async getById(id: string) {
     const data = await this.prisma.student.findUnique({
@@ -24,16 +36,6 @@ class StudentDatabase implements StudentPersistence {
     return data;
   }
 
-  public async save(name: string) {
-    const data = await this.prisma.student.create({
-      data: {
-        name,
-      },
-    });
-
-    return data;
-  }
-
   public async getAll() {
     const data = await this.prisma.student.findMany({
       include: {
@@ -43,6 +45,33 @@ class StudentDatabase implements StudentPersistence {
       },
       orderBy: {
         name: 'asc',
+      },
+    });
+
+    return data;
+  }
+
+  public async getAssignments(id: string) {
+    const data = await this.prisma.studentAssignment.findMany({
+      where: {
+        studentId: id,
+        status: 'SUBMITTED',
+      },
+      include: {
+        assignment: true,
+      },
+    });
+
+    return data;
+  }
+
+  public async getGrades(id: string) {
+    const data = await this.prisma.studentAssignment.findMany({
+      where: {
+        studentId: id,
+      },
+      include: {
+        assignment: true,
       },
     });
 

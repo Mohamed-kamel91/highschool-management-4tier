@@ -1,5 +1,9 @@
 import { StudentDatabase } from '../persistence';
-import { GetStudentDTO, CreateStudentDTO } from '../dtos/student-dto';
+import {
+  GetStudentDTO,
+  CreateStudentDTO,
+  StudentID,
+} from '../dtos/student-dto';
 import { StudentNotFoundException } from '../exceptions/student-exceptions';
 
 class StudentService {
@@ -33,6 +37,34 @@ class StudentService {
     const students = await this.studentDatabase.getAll();
 
     return students;
+  }
+
+  public async getAssignments(dto: StudentID) {
+    const { id } = dto;
+
+    const student = await this.studentDatabase.getById(id);
+
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    const assignments = await this.studentDatabase.getAssignments(id);
+
+    return assignments;
+  }
+
+  public async getGrades(dto: StudentID) {
+    const { id } = dto;
+
+    const student = await this.studentDatabase.getById(id);
+
+    if (!student) {
+      throw new StudentNotFoundException();
+    }
+
+    const grades = await this.studentDatabase.getGrades(id);
+
+    return grades;
   }
 }
 

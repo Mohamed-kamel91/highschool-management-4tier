@@ -18,3 +18,12 @@ export class InvalidStudentIdException extends BadRequestError {
     );
   }
 }
+
+export class MissingStudentIdException extends BadRequestError {
+  constructor() {
+    super(
+      'Student ID is invalid',
+      ErrorExceptionType.MISSING_STUDENT_ID,
+    );
+  }
+}

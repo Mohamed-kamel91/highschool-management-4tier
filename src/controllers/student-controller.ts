@@ -1,7 +1,11 @@
 import express from 'express';
 
 import { StudentService } from '../services';
-import { GetStudentDTO, CreateStudentDTO } from '../dtos/student-dto';
+import {
+  GetStudentDTO,
+  CreateStudentDTO,
+  StudentID,
+} from '../dtos/student-dto';
 
 import { parseForResponse } from '../shared/utils';
 
@@ -40,7 +44,6 @@ class StudentController {
   ) => {
     try {
       const dto = CreateStudentDTO.fromRequest(req.body);
-
       const data = await this.studentService.createStudent(dto);
 
       res.status(201).json({
@@ -62,6 +65,44 @@ class StudentController {
       const data = await this.studentService.getAllStudents();
 
       res.status(201).json({
+        error: undefined,
+        data: parseForResponse(data),
+        success: true,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getAssignments = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    try {
+      const dto = StudentID.fromRequestParams(req.params);
+      const data = await this.studentService.getAssignments(dto);
+
+      res.status(200).json({
+        error: undefined,
+        data: parseForResponse(data),
+        success: true,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getGrades = async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    try {
+      const dto = StudentID.fromRequestParams(req.params);
+      const data = await this.studentService.getGrades(dto);
+
+      res.status(200).json({
         error: undefined,
         data: parseForResponse(data),
         success: true,
