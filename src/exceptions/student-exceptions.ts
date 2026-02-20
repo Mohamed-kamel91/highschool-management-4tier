@@ -1,6 +1,7 @@
 import {
   NotFoundError,
   BadRequestError,
+  ConflictError,
 } from '../shared/errors/app-errors';
 import { ErrorExceptionType } from '../shared/constants/error-types';
 
@@ -24,6 +25,15 @@ export class MissingStudentIdException extends BadRequestError {
     super(
       'Student ID is invalid',
       ErrorExceptionType.MISSING_STUDENT_ID,
+    );
+  }
+}
+
+export class StudentAlreadyEnrolledException extends ConflictError {
+  constructor() {
+    super(
+      'Student already enrolled in this class',
+      ErrorExceptionType.STUDENT_ALREADY_ENROLLED,
     );
   }
 }

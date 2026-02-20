@@ -7,11 +7,7 @@ import {
 import { StudentNotFoundException } from '../exceptions/student-exceptions';
 
 class StudentService {
-  private studentDatabase: StudentDatabase;
-
-  constructor(studentDatabase: StudentDatabase) {
-    this.studentDatabase = studentDatabase;
-  }
+  constructor(private studentDatabase: StudentDatabase) {}
 
   public async getStudent(dto: GetStudentDTO) {
     const { studentId } = dto;

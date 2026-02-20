@@ -30,6 +30,15 @@ export class BadRequestError extends AppError {
   }
 }
 
+export class ConflictError extends AppError {
+  constructor(
+    message: string = 'Conflit',
+    errorCode: string = 'CONFLICT',
+  ) {
+    super(message, 409, errorCode);
+  }
+}
+
 export class InternalServerError extends AppError {
   constructor(
     message: string = 'Something went wrong on our end',

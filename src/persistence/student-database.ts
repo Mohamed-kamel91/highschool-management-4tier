@@ -1,11 +1,11 @@
 import { PrismaClient } from '../../generated/prisma/client';
 
 interface StudentPersistence {
-  save(name: string): any;
-  getById(id: string): any;
-  getAll(): any;
-  getAssignments(id: string): any;
-  getGrades(id: string): any;
+  save(name: string): Promise<any>;
+  getById(id: string): Promise<any>;
+  getAll(): Promise<any>;
+  getAssignments(id: string): Promise<any>;
+  getGrades(id: string): Promise<any>;
 }
 
 class StudentDatabase implements StudentPersistence {

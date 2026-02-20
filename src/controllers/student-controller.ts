@@ -10,11 +10,7 @@ import {
 import { parseForResponse } from '../shared/utils';
 
 class StudentController {
-  private studentService: StudentService;
-
-  constructor(studentService: StudentService) {
-    this.studentService = studentService;
-  }
+  constructor(private studentService: StudentService) {}
 
   public getStudent = async (
     req: express.Request,
