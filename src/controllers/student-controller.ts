@@ -2,10 +2,9 @@ import express from 'express';
 
 import { StudentService } from '../services';
 import {
-  GetStudentDTO,
   CreateStudentDTO,
   StudentID,
-} from '../dtos/student-dto';
+} from '../dtos/student-dtos';
 
 import { parseForResponse } from '../shared/utils';
 
@@ -20,7 +19,7 @@ class StudentController {
     const { id } = req.params;
 
     try {
-      const dto = GetStudentDTO.fromRequest(id);
+      const dto = StudentID.fromRequestParams(id);
       const data = await this.studentService.getStudent(dto);
 
       res.status(200).json({

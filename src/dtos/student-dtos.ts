@@ -29,18 +29,6 @@ export class StudentID {
   }
 }
 
-export class GetStudentDTO {
-  private constructor(public studentId: string) {}
-
-  public static fromRequest(id: unknown) {
-    if (!isValidID(id)) {
-      throw new InvalidStudentIdException();
-    }
-
-    return new GetStudentDTO(id);
-  }
-}
-
 export class CreateStudentDTO {
   private constructor(public studentName: string) {}
 
