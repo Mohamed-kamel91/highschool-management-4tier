@@ -5,10 +5,12 @@ import { defineFeature, loadFeature } from 'jest-cucumber';
 import { app } from '../../src/index';
 import { Assignment, Student } from '../../generated/prisma/client';
 import { resetDatabase } from '../fixtures/reset';
-import { ClassroomBuilder } from '../fixtures/classroom-builder';
-import { AssignmentBuilder } from '../fixtures/assignment-builder';
-import { ClassEnrollmentBuilder } from '../fixtures/class-enrollment-builder';
-import { StudentBuilder } from '../fixtures/student-builder';
+import {
+  aClassRoom,
+  anAssignment,
+  anEnrolledStudent,
+  aStudent,
+} from '../fixtures';
 
 const feature = loadFeature(
   path.join(
@@ -37,14 +39,9 @@ defineFeature(feature, (test) => {
     given(
       /^A student is enrolled to a class with name "(.*)"$/,
       async (classroomName) => {
-        const studentBuilder = new StudentBuilder();
-        const classroomBuilder = new ClassroomBuilder().withName(
-          classroomName,
-        );
-
-        const enrollmentResult = await new ClassEnrollmentBuilder()
-          .from(classroomBuilder)
-          .and(studentBuilder)
+        const enrollmentResult = await anEnrolledStudent()
+          .from(aClassRoom().withName(classroomName))
+          .and(aStudent())
           .build();
 
         student = enrollmentResult.student;
@@ -54,12 +51,8 @@ defineFeature(feature, (test) => {
     and(
       /^an assignment exists for the class "(.*)"$/,
       async (classroomName) => {
-        const classroomBuilder = new ClassroomBuilder().withName(
-          classroomName,
-        );
-
-        const assignmentResult = await new AssignmentBuilder()
-          .from(classroomBuilder)
+        const assignmentResult = await anAssignment()
+          .from(aClassRoom().withName(classroomName))
           .build();
 
         assignment = assignmentResult.assignment;
@@ -101,13 +94,12 @@ defineFeature(feature, (test) => {
     let unenrolledStudent: Student;
 
     given('A student is not enrolled to a class', async () => {
-      unenrolledStudent = await new StudentBuilder().build();
+      unenrolledStudent = await aStudent().build();
     });
 
     and('an assignment exists for the class', async () => {
-      const classroomBuilder = new ClassroomBuilder();
-      const assignmentResult = await new AssignmentBuilder()
-        .from(classroomBuilder)
+      const assignmentResult = await anAssignment()
+        .from(aClassRoom())
         .build();
 
       assignment = assignmentResult.assignment;

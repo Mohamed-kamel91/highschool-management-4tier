@@ -5,7 +5,7 @@ import { defineFeature, loadFeature } from 'jest-cucumber';
 import { app } from '../../src/index';
 import { Class } from '../../generated/prisma/client';
 import { resetDatabase } from '../fixtures/reset';
-import { ClassroomBuilder } from '../fixtures/classroom-builder';
+import { aClassRoom } from '../fixtures';
 
 const feature = loadFeature(
   path.join(
@@ -26,10 +26,11 @@ defineFeature(feature, (test) => {
   }) => {
     let requestBody: any = {};
     let response: any = {};
+    
     let classroom: Class;
 
-    given(/^a classroom with name "(.*)" exists$/, async (name) => {
-      classroom = await new ClassroomBuilder().withName(name).build();
+    given('a classroom exists', async () => {
+      classroom = await aClassRoom().build();
     });
 
     when(
@@ -55,16 +56,18 @@ defineFeature(feature, (test) => {
   test('Missing assignment title', ({ given, when, then }) => {
     let requestBody: any = {};
     let response: any = {};
+
     let classroom: Class;
 
-    given(/^a classroom with name "(.*)" exists$/, async (name) => {
-      classroom = await new ClassroomBuilder().withName(name).build();
-      requestBody = { classId: classroom.id };
+    given('a classroom exists', async () => {
+      classroom = await aClassRoom().build();
     });
 
     when(
       'I send a request to create an assignment without a title',
       async () => {
+        requestBody = { classId: classroom.id };
+
         response = await request(app)
           .post('/assignments')
           .send(requestBody);

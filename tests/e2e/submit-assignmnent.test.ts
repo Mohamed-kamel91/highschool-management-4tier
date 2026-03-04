@@ -6,12 +6,14 @@ import { defineFeature, loadFeature } from 'jest-cucumber';
 import { app } from '../../src/index';
 import { StudentAssignment } from '../../generated/prisma/client';
 import { resetDatabase } from '../fixtures/reset';
-import { StudentBuilder } from '../fixtures/student-builder';
-import { AssignmentBuilder } from '../fixtures/assignment-builder';
-import { ClassroomBuilder } from '../fixtures/classroom-builder';
-import { ClassEnrollmentBuilder } from '../fixtures/class-enrollment-builder';
-import { StudentAssignmentBuilder } from '../fixtures/student-assignment-builder';
-import { AssignmentSubmissionBuilder } from '../fixtures/assignment-submission-builder';
+import {
+  aClassRoom,
+  anAssignment,
+  anAssignmentSubmission,
+  anEnrolledStudent,
+  aStudent,
+  aStudentAssigment,
+} from '../fixtures';
 
 const feature = loadFeature(
   path.join(
@@ -32,23 +34,17 @@ defineFeature(feature, (test) => {
   }) => {
     let requestBody: any = {};
     let response: any = {};
+    
     let studentAssignment: StudentAssignment;
 
     given('I was assigned an assignment', async () => {
-      const studentBuilder = new StudentBuilder();
-      const classroomBuilder = new ClassroomBuilder();
+      const classroomBuilder = aClassRoom();
 
-      const classEnrollment = new ClassEnrollmentBuilder()
-        .from(classroomBuilder)
-        .and(studentBuilder);
-
-      const assignmentBuilder = new AssignmentBuilder().from(
-        classroomBuilder,
-      );
-
-      studentAssignment = await new StudentAssignmentBuilder()
-        .from(classEnrollment)
-        .and(assignmentBuilder)
+      studentAssignment = await aStudentAssigment()
+        .from(
+          anEnrolledStudent().from(classroomBuilder).and(aStudent()),
+        )
+        .and(anAssignment().from(classroomBuilder))
         .build();
     });
 
@@ -76,31 +72,25 @@ defineFeature(feature, (test) => {
   }) => {
     let requestBody: any = {};
     let response: any = {};
+
     let studentAssignment: StudentAssignment;
 
     given('I have already submitted an assignment', async () => {
-      const studentBuilder = new StudentBuilder();
-      const classroomBuilder = new ClassroomBuilder();
+      const classroomBuilder = aClassRoom();
 
-      const classEnrollment = new ClassEnrollmentBuilder()
-        .from(classroomBuilder)
-        .and(studentBuilder);
+      const submissionResult = await anAssignmentSubmission()
+        .from(
+          aStudentAssigment()
+            .from(
+              anEnrolledStudent()
+                .from(classroomBuilder)
+                .and(aStudent()),
+            )
+            .and(anAssignment().from(classroomBuilder)),
+        )
+        .build();
 
-      const assignmentBuilder = new AssignmentBuilder().from(
-        classroomBuilder,
-      );
-
-      const studentAssignmentBuilder = new StudentAssignmentBuilder()
-        .from(classEnrollment)
-        .and(assignmentBuilder);
-
-      const assignmentSubmissionResult =
-        await new AssignmentSubmissionBuilder()
-          .from(studentAssignmentBuilder)
-          .build();
-
-      studentAssignment =
-        assignmentSubmissionResult.studentAssignment;
+      studentAssignment = submissionResult.studentAssignment;
     });
 
     when('I submit the assignment again', async () => {

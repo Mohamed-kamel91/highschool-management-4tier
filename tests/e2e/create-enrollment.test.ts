@@ -3,11 +3,13 @@ import request from 'supertest';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 
 import { app } from '../../src/index';
-import { Class, Student } from '../../generated/prisma/client';
+import {
+  Class,
+  ClassEnrollment,
+  Student,
+} from '../../generated/prisma/client';
 import { resetDatabase } from '../fixtures/reset';
-import { ClassroomBuilder } from '../fixtures/classroom-builder';
-import { StudentBuilder } from '../fixtures/student-builder';
-import { ClassEnrollmentBuilder } from '../fixtures/class-enrollment-builder';
+import { aClassRoom, anEnrolledStudent, aStudent } from '../fixtures';
 
 const feature = loadFeature(
   path.join(
@@ -28,17 +30,20 @@ defineFeature(feature, (test) => {
     let requestBody: any = {};
     let response: any = {};
 
-    given('a class and a student exist', async () => {
-      const student = await new StudentBuilder().build();
-      const classroom = await new ClassroomBuilder().build();
+    let student: Student;
+    let classroom: Class;
 
+    given('a class and a student exist', async () => {
+      student = await aStudent().build();
+      classroom = await aClassRoom().build();
+    });
+
+    when('I enroll the student to the class', async () => {
       requestBody = {
         studentId: student.id,
         classId: classroom.id,
       };
-    });
 
-    when('I enroll the student to the class', async () => {
       response = await request(app)
         .post('/class-enrollments')
         .send(requestBody);
@@ -63,25 +68,22 @@ defineFeature(feature, (test) => {
   }) => {
     let requestBody: any = {};
     let response: any = {};
-    let student: Student;
-    let classroom: Class;
+
+    let classEnrollment: ClassEnrollment;
 
     given('a student is already enrolled to a class', async () => {
-      const classroomBuilder = new ClassroomBuilder();
-      const studentBuilder = new StudentBuilder();
-      const enrollmentResult = await new ClassEnrollmentBuilder()
-        .from(classroomBuilder)
-        .and(studentBuilder)
+      const enrollmentResult = await anEnrolledStudent()
+        .from(aClassRoom())
+        .and(aStudent())
         .build();
 
-      classroom = enrollmentResult.classroom;
-      student = enrollmentResult.student;
+      classEnrollment = enrollmentResult.enrollment;
     });
 
     when('I enroll the student to the class again', async () => {
       requestBody = {
-        classId: classroom.id,
-        studentId: student.id,
+        classId: classEnrollment.classId,
+        studentId: classEnrollment.studentId,
       };
 
       response = await request(app)

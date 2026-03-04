@@ -3,8 +3,9 @@ import request from 'supertest';
 import { defineFeature, loadFeature } from 'jest-cucumber';
 
 import { app } from '../../src/index';
+import { Class } from '../../generated/prisma/client';
 import { resetDatabase } from '../fixtures/reset';
-import { ClassroomBuilder } from '../fixtures/classroom-builder';
+import { aClassRoom } from '../fixtures';
 
 const feature = loadFeature(
   path.join(
@@ -43,15 +44,18 @@ defineFeature(feature, (test) => {
     let requestBody: any = {};
     let response: any = {};
 
+    let classroom: Class;
+
     given(
       /^a classroom with name "(.*)" already exists$/,
       async (name) => {
-        requestBody = { name };
-        await new ClassroomBuilder().withName(name).build();
+        classroom = await aClassRoom().withName(name).build();
       },
     );
 
-    when('I send a request to create a classroom', async () => {
+    when('I send a request to create a classroom with same name', async () => {
+      requestBody = { name: classroom.name };
+
       response = await request(app)
         .post('/classes')
         .send(requestBody);

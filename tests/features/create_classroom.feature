@@ -10,5 +10,5 @@ Feature: Create Classroom
 
   Scenario: Classroom already exists
     Given a classroom with name "Math" already exists
-    When I send a request to create a classroom
+    When I send a request to create a classroom with same name
     Then the classroom should not be created
