@@ -6,6 +6,7 @@ async function seed() {
       return prisma.student.create({
         data: {
           name: `Student ${i + 1}`,
+          email: `student${i + 1}@essentialist.com`,
         },
       });
     }),
@@ -46,7 +47,7 @@ async function seed() {
         data: {
           studentId: students[i].id,
           assignmentId: assignments[j].id,
-          grade: ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)], // Randomly assign grades
+          // grade: ["A", "B", "C", "D"][Math.floor(Math.random() * 4)], // Randomly assign grades
         },
       });
     }
@@ -71,7 +72,7 @@ async function seed() {
 
 seed()
   .catch((e) => {
-    console.error('❌ Seed failed:', e);
+    console.error(e);
     process.exit(1);
   })
   .finally(async () => {

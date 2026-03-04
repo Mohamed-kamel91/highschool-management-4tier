@@ -5,6 +5,7 @@
   "ext": ".ts,.js",
   "ignore": [
     "src/**/*.spec.ts",
+    "src/**/*.test.ts",
     "node_modules"
   ],
   "exec": "tsx ./src/index.ts"
